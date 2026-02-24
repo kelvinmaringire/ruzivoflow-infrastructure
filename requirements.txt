@@ -1,0 +1,6 @@
+# Ansible on Windows:
+# - Python 3.11: Ansible 2.14+ crashes (os.get_blocking missing). Use 2.13.
+# - Ansible 2.13 on Windows then hits "No module named 'fcntl'" (Unix-only).
+# So on Windows, either (1) use WSL and install this file there, or (2) use Python 3.12+ and ansible-core>=2.14.
+# This pin is for Python 3.11 (e.g. in WSL): no get_blocking, so use 2.13.
+ansible-core>=2.13,<2.14

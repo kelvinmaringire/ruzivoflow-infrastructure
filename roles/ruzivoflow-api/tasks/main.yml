@@ -1,0 +1,29 @@
+- name: Clone project
+  git:
+    repo: https://github.com/kelvinmaringire/ruzivoflow-api.git
+    dest: /root/srv/ruzivoflow-api
+    version: main
+    force: yes
+
+- name: Check if .env file exists locally
+  stat:
+    path: "{{ env_src_file }}"
+  delegate_to: localhost
+  become: false
+  register: env_src_stat
+
+- name: Copy .env file
+  copy:
+    src: "{{ env_src_file }}"
+    dest: /root/srv/ruzivoflow-api/.env
+  when: env_src_stat.stat.exists
+
+- name: Ensure traefik network exists
+  community.docker.docker_network:
+    name: ruzivoflow_net
+    state: present    
+
+- name: Run Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: /root/srv/ruzivoflow-api
+    state: present

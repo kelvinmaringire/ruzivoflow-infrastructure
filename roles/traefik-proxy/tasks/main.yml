@@ -1,0 +1,49 @@
+- name: Clone project
+  git:
+    repo: https://github.com/kelvinmaringire/traefik-proxy.git
+    dest: /root/srv/traefik-proxy
+    version: master
+    force: yes
+
+- name: Check if .env file exists locally
+  stat:
+    path: "{{ env_src_file }}"
+  delegate_to: localhost
+  become: false
+  register: env_src_stat
+
+- name: Copy .env file
+  copy:
+    src: "{{ env_src_file }}"
+    dest: /root/srv/traefik-proxy/.env
+  when: env_src_stat.stat.exists
+
+- name: Ensure data/certs directory exists
+  file:
+    path: /root/srv/traefik-proxy/data/certs
+    state: directory
+    mode: '0700'
+
+- name: Check if cloudflare-acme.json exists on host
+  stat:
+    path: /root/srv/traefik-proxy/data/certs/cloudflare-acme.json
+  register: acme_json_stat
+
+- name: Set cloudflare-acme.json permissions
+  file:
+    path: /root/srv/traefik-proxy/data/certs/cloudflare-acme.json
+    state: file
+    mode: '0600'
+    owner: root
+    group: root
+  when: acme_json_stat.stat.exists
+
+- name: Ensure traefik network exists
+  community.docker.docker_network:
+    name: traefik_net
+    state: present    
+
+- name: Run Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: /root/srv/traefik-proxy
+    state: present

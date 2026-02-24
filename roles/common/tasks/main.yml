@@ -1,0 +1,52 @@
+- name: Set timezone
+  timezone:
+    name: Africa/Johannesburg
+
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Upgrade system
+  apt:
+    upgrade: dist
+
+- name: Install required packages
+  apt:
+    name:
+      - ufw
+      - git
+      - curl
+      - ca-certificates
+      - gnupg
+      - lsb-release
+    state: present
+
+- name: Create srv directory
+  file:
+    path: /root/srv
+    state: directory
+
+- name: Install rclone
+  shell: curl -s https://rclone.org/install.sh | bash
+  args:
+    creates: /usr/bin/rclone
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+    policy: deny
+
+- name: Allow required ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+    proto: tcp
+  loop:
+    - 22
+    - 80
+    - 443
+    - 8000
+    - 6379
+
+- name: Reload UFW
+  command: ufw reload

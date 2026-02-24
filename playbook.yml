@@ -1,0 +1,22 @@
+- name: Setup Ubuntu VPS for Docker Apps
+  hosts: vps
+  become: true
+
+  roles:
+    - common
+    - docker
+    - role: traefik-proxy
+      vars:
+        env_src_file: "{{ playbook_dir }}/envs/traefik-proxy/.env"
+    - role: hungwetips-api
+      vars:
+        env_src_file: "{{ playbook_dir }}/envs/hungwetips-api/.env"
+    - role: ruzivoflow-api
+      vars:
+        env_src_file: "{{ playbook_dir }}/envs/ruzivoflow-api/.env"
+    - role: buybuddy-api
+      vars:
+        env_src_file: "{{ playbook_dir }}/envs/buybuddy-api/.env"
+    - role: proudlyzimmart-api
+      vars:
+        env_src_file: "{{ playbook_dir }}/envs/proudlyzimmart-api/.env"
