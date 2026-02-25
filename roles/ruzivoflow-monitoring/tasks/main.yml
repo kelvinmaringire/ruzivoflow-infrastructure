@@ -1,0 +1,30 @@
+- name: Clone project
+  git:
+    repo: https://github.com/kelvinmaringire/ruzivoflow-monitoring.git
+    dest: /root/srv/ruzivoflow-monitoring
+    version: main
+    force: yes
+
+- name: Check if .env file exists locally
+  stat:
+    path: "{{ env_src_file }}"
+  delegate_to: localhost
+  become: false
+  register: env_src_stat
+
+- name: Copy .env file
+  copy:
+    src: "{{ env_src_file }}"
+    dest: /root/srv/ruzivoflow-monitoring/.env
+  when: env_src_stat.stat.exists
+
+
+- name: Ensure monitoring network exists
+  community.docker.docker_network:
+    name: monitoring_net
+    state: present
+
+- name: Run Docker Compose
+  community.docker.docker_compose_v2:
+    project_src: /root/srv/ruzivoflow-monitoring
+    state: present

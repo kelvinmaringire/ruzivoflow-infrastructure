@@ -8,6 +8,9 @@
     - role: traefik-proxy
       vars:
         env_src_file: "{{ playbook_dir }}/envs/traefik-proxy/.env"
+    - role: ruzivoflow-monitoring
+      vars:
+        env_src_file: "{{ playbook_dir }}/envs/ruzivoflow-monitoring/.env"    
     - role: hungwetips-api
       vars:
         env_src_file: "{{ playbook_dir }}/envs/hungwetips-api/.env"
