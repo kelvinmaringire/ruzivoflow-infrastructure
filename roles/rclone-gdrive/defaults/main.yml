@@ -1,0 +1,4 @@
+---
+rclone_gdrive_config_src: "{{ playbook_dir }}/secrets/rclone-gdrive-config.json"
+rclone_remote_name: gdrive
+rclone_config_path: /root/.config/rclone/rclone.conf

@@ -1,6 +1,8 @@
 # Secrets and env files
 envs/
 *.env
+secrets/
+ruzivoflow-backups-*.json
 
 # SSH keys (optional - uncomment if you keep keys in repo folder)
 # Ansible ssh private key.txt

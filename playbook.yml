@@ -5,6 +5,9 @@
   roles:
     - common
     - docker
+    - role: rclone-gdrive
+      vars:
+        rclone_gdrive_config_src: "{{ playbook_dir }}/secrets/rclone-gdrive-config.json"
     - role: traefik-proxy
       vars:
         env_src_file: "{{ playbook_dir }}/envs/traefik-proxy/.env"

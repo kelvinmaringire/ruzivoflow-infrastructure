@@ -17,6 +17,8 @@
 
    chmod 600 "/home/ringaz/ruzivoflow-infrastructure/ansible_key"
 
+   git push origin main
+
    ansible-playbook playbook.yml
 
    ```

@@ -1,0 +1,6 @@
+[{{ rclone_remote_name }}]
+type = drive
+client_id = {{ rclone_config.client_id }}
+client_secret = {{ rclone_config.client_secret }}
+scope = {{ rclone_config.scope }}
+token = {{ rclone_config.token | tojson }}

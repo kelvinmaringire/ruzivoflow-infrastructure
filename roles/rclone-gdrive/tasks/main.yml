@@ -1,0 +1,34 @@
+---
+- name: Check if rclone gdrive config exists locally
+  stat:
+    path: "{{ rclone_gdrive_config_src }}"
+  delegate_to: localhost
+  become: false
+  register: rclone_config_src_stat
+
+- name: Read rclone gdrive config JSON
+  slurp:
+    src: "{{ rclone_gdrive_config_src }}"
+  register: rclone_config_raw
+  delegate_to: localhost
+  become: false
+  when: rclone_config_src_stat.stat.exists
+
+- name: Parse rclone config
+  set_fact:
+    rclone_config: "{{ rclone_config_raw.content | b64decode | from_json }}"
+  when: rclone_config_src_stat.stat.exists
+
+- name: Ensure rclone config directory exists
+  file:
+    path: "{{ rclone_config_path | dirname }}"
+    state: directory
+    mode: "0755"
+  when: rclone_config_src_stat.stat.exists
+
+- name: Deploy rclone gdrive config
+  template:
+    src: rclone-gdrive.conf.j2
+    dest: "{{ rclone_config_path }}"
+    mode: "0600"
+  when: rclone_config_src_stat.stat.exists
